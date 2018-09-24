@@ -1,0 +1,36 @@
+# Build Dirs
+build/
+DerivedData/
+
+# Xcode
+xcuserdata
+*.xccheckout
+profile
+*.moved-aside
+*.hmap
+*.pbxuser
+!default.pbxuser
+*.perspective
+*.perspectivev3
+!default.perspectivev3
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.xcuserdatad
+*.xcscmblueprint
+*.trace
+*project.xcworkspace/
+*~.nib
+*.xccheckout
+
+# OSX
+.DS_Store
+
+# Git
+*.orig
+*.BACKUP.*
+*.REMOTE.*
+*.LOCAL.*
+*.BASE.*
+*.bak
