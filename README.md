@@ -1,4 +1,4 @@
-# AR Recorder
+# <img src="icon@2x.png" alt="AR Recorder icon" width="29"> AR Recorder
 
 This project demonstrates how ARKit's private SPI can be used to record and replay AR sessions, thus enabling a convenient development workflow and test automation.
 
