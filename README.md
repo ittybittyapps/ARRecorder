@@ -18,7 +18,9 @@ To delete a recorded file, tap **Replay** and swipe left on a file row, then tap
 
 ## SPI declaration
 
-Relevant SPI classes and methods are annotated in [ARRecordingTechnique.h](ARRecorder/ARRecordingTechnique.h) and [ARReplaySensor.h](ARRecorder/ARReplaySensor.h). Their signature and presumed function have been observed as of ARKit 2.0.
+Relevant SPI classes and methods are annotated across a few headers like [ARRecordingTechnique.h](ARRecorder/ARRecordingTechnique.h) and [ARReplaySensorProtocol.h](ARRecorder/ARReplaySensorProtocol.h) (please see `ARKit Private API` group in Xcode project for the full list). Their signature and presumed function have been observed as of ARKit 3.0.
+
+Note that depending on the iOS version, either `ARReplaySensor` or `ARReplaySensorPublic` class is used to load replays. See `ARConfiguration.makeReplayConfiguration(replayURL:)` method in [MainViewController.swift](ARRecorder/MainViewController.swift) for an example of how that can be done.
 
 ## Supported devices
 

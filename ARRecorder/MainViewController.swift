@@ -37,8 +37,8 @@ final class MainViewController: UIViewController, ARSCNViewDelegate, ARReplaySen
         case idle
         case normal
         case recording(ARRecordingTechnique)
-        case loadingReplay(ARReplaySensor)
-        case replaying(ARReplaySensor)
+        case loadingReplay
+        case replaying
         case replayFinished
     }
 
@@ -49,9 +49,6 @@ final class MainViewController: UIViewController, ARSCNViewDelegate, ARReplaySen
         case .recording(let technique):
             // Finish recording a replay when transitioning from Recording state
             technique.finishRecording()
-        case .replaying(let sensor):
-            // End the playback when transitioning from Replaying state
-            sensor.endReplay()
         default:
             break
         }
@@ -170,17 +167,37 @@ final class MainViewController: UIViewController, ARSCNViewDelegate, ARReplaySen
     // MARK: - ARReplaySensorDelegate
 
     func replaySensorDidFinishLoadingFrames(_ framesCount: UInt) {
+        // ARReplaySensor calls both this and the "modern" callback on iOS 13; there's no need to handle both
+        if #available(iOS 13, *) { return }
+
+        print("Replay sensor loaded \(framesCount) frames.")
+
         DispatchQueue.main.async {
-            guard case let .loadingReplay(sensor) = self.state else {
+            guard case .loadingReplay = self.state else {
                 return
             }
 
             // Once replay sensor finishes loading, transition to the Replaying state
-            self.transition(to: .replaying(sensor))
+            self.transition(to: .replaying)
+        }
+    }
+
+    func replaySensorDidFinishLoading(withStartTimestamp startTimestamp: TimeInterval, endTimestamp: TimeInterval) {
+        print("Replay sensor loaded frames from \(String(format: "%.3f", startTimestamp))s to \(String(format: "%.3f", endTimestamp))s.")
+
+        DispatchQueue.main.async {
+            guard case .loadingReplay = self.state else {
+                return
+            }
+
+            // Once replay sensor finishes loading, transition to the Replaying state
+            self.transition(to: .replaying)
         }
     }
 
     func replaySensorDidFinishReplayingData() {
+        print("Replay finished.")
+
         DispatchQueue.main.async {
             guard case .replaying = self.state else {
                 return
@@ -204,7 +221,7 @@ final class MainViewController: UIViewController, ARSCNViewDelegate, ARReplaySen
 
         // Transition to Loading Replay state and start a replay session; delegate callback from the replay sensor will inform when loading finishes
         self.sceneView.session.pause()
-        self.transition(to: .loadingReplay(sensor))
+        self.transition(to: .loadingReplay)
         self.sceneView.session.run(configuration, options: [ .resetTracking, .removeExistingAnchors ])
     }
 
@@ -231,8 +248,21 @@ private extension ARConfiguration {
         return (configuration, technique)
     }
 
-    static func makeReplayConfiguration(replayURL: URL) -> (ARConfiguration, ARReplaySensor) {
-        let replaySensor = ARReplaySensor(sequenceURL: replayURL, manualReplay: false)
+    static func makeReplayConfiguration(replayURL: URL) -> (ARConfiguration, ARReplaySensorProtocol) {
+        let replaySensor: ARReplaySensorProtocol
+        if #available(iOS 13, *) {
+            let modernReplaySensor = ARReplaySensorPublic(sequenceURL: replayURL, manualReplay: false)
+            if modernReplaySensor.arkitVersion != nil {
+                // This is a replay made on iOS 13 or later
+                replaySensor = modernReplaySensor
+            } else {
+                // This is a replay made on iOS 12 or earlier – have to use the legacy API for it
+                replaySensor = ARReplaySensor(sequenceURL: replayURL, manualReplay: false)
+            }
+        } else {
+            replaySensor = ARReplaySensor(sequenceURL: replayURL, manualReplay: false)
+        }
+
         let replayConfiguration = self.replayConfiguration(with: .makeBaseConfiguration(), replaySensor: replaySensor, replayingResultDataClasses: nil)
         return (replayConfiguration, replaySensor)
     }

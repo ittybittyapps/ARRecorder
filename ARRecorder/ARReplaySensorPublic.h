@@ -8,8 +8,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-API_DEPRECATED("Use ARReplaySensorPublic instead.", ios(11.0, 13.0))
-@interface ARReplaySensor : NSObject <ARReplaySensorProtocol>
+API_AVAILABLE(ios(13.0))
+@interface ARReplaySensorPublic : NSObject <ARReplaySensorProtocol>
 
 @end
 

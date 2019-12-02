@@ -29,6 +29,9 @@
 		7D21845A21548663002AFD28 /* ARRecordingTechnique.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARRecordingTechnique.h; sourceTree = "<group>"; };
 		7D21845B21548663002AFD28 /* ARReplaySensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARReplaySensor.h; sourceTree = "<group>"; };
 		7D21845C21548803002AFD28 /* ARRecorder-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ARRecorder-Bridging-Header.h"; sourceTree = "<group>"; };
+		7D25217B23921EAB008E98C0 /* ARReplaySensorDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARReplaySensorDelegate.h; sourceTree = "<group>"; };
+		7D25217C23922234008E98C0 /* ARReplaySensorProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARReplaySensorProtocol.h; sourceTree = "<group>"; };
+		7D25217D23922962008E98C0 /* ARReplaySensorPublic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARReplaySensorPublic.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +83,9 @@
 			children = (
 				7D21845A21548663002AFD28 /* ARRecordingTechnique.h */,
 				7D21845B21548663002AFD28 /* ARReplaySensor.h */,
+				7D25217B23921EAB008E98C0 /* ARReplaySensorDelegate.h */,
+				7D25217C23922234008E98C0 /* ARReplaySensorProtocol.h */,
+				7D25217D23922962008E98C0 /* ARReplaySensorPublic.h */,
 			);
 			name = "ARKit Private API";
 			sourceTree = "<group>";
