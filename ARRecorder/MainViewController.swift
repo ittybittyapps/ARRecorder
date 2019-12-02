@@ -167,7 +167,10 @@ final class MainViewController: UIViewController, ARSCNViewDelegate, ARReplaySen
     // MARK: - ARReplaySensorDelegate
 
     func replaySensorDidFinishLoadingFrames(_ framesCount: UInt) {
-        print("Replay sensor finished loading \(framesCount) frames.")
+        // ARReplaySensor calls both this and the "modern" callback on iOS 13; there's no need to handle both
+        if #available(iOS 13, *) { return }
+
+        print("Replay sensor loaded \(framesCount) frames.")
 
         DispatchQueue.main.async {
             guard case .loadingReplay = self.state else {
@@ -180,7 +183,7 @@ final class MainViewController: UIViewController, ARSCNViewDelegate, ARReplaySen
     }
 
     func replaySensorDidFinishLoading(withStartTimestamp startTimestamp: TimeInterval, endTimestamp: TimeInterval) {
-        print("Replay sensor finished loading frames from \(String(format: "%.3f", startTimestamp))s to \(String(format: "%.3f", endTimestamp))s.")
+        print("Replay sensor loaded frames from \(String(format: "%.3f", startTimestamp))s to \(String(format: "%.3f", endTimestamp))s.")
 
         DispatchQueue.main.async {
             guard case .loadingReplay = self.state else {
@@ -193,6 +196,8 @@ final class MainViewController: UIViewController, ARSCNViewDelegate, ARReplaySen
     }
 
     func replaySensorDidFinishReplayingData() {
+        print("Replay finished.")
+
         DispatchQueue.main.async {
             guard case .replaying = self.state else {
                 return
@@ -246,10 +251,18 @@ private extension ARConfiguration {
     static func makeReplayConfiguration(replayURL: URL) -> (ARConfiguration, ARReplaySensorProtocol) {
         let replaySensor: ARReplaySensorProtocol
         if #available(iOS 13, *) {
-            replaySensor = ARReplaySensorPublic(sequenceURL: replayURL, manualReplay: false)
+            let modernReplaySensor = ARReplaySensorPublic(sequenceURL: replayURL, manualReplay: false)
+            if modernReplaySensor.arkitVersion != nil {
+                // This is a replay made on iOS 13 or later
+                replaySensor = modernReplaySensor
+            } else {
+                // This is a replay made on iOS 12 or earlier – have to use the legacy API for it
+                replaySensor = ARReplaySensor(sequenceURL: replayURL, manualReplay: false)
+            }
         } else {
             replaySensor = ARReplaySensor(sequenceURL: replayURL, manualReplay: false)
         }
+
         let replayConfiguration = self.replayConfiguration(with: .makeBaseConfiguration(), replaySensor: replaySensor, replayingResultDataClasses: nil)
         return (replayConfiguration, replaySensor)
     }

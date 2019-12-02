@@ -40,6 +40,21 @@ Reads a "replay" of previously captured sensor data and intermediate processing 
 @property (nonatomic, assign, readonly) BOOL finishedReplaying API_AVAILABLE(ios(13.0));
 
 /**
+ Model identifier of the device that the replay was recorded on.
+ */
+@property (nonatomic, strong, readonly, nullable) NSString *deviceModel;
+
+/**
+ OS version identifier that the replay was recorded on. For replays recorded on versions prior to iOS 13, this returns nil.
+ */
+@property (nonatomic, strong, readonly, nullable) NSString *osVersion API_AVAILABLE(ios(13.0));
+
+/**
+ ARKit version identifier that the replay was recorded with. For replays recorded on versions prior to ARKit 3 (iOS 13), this returns nil.
+ */
+@property (nonatomic, strong, readonly, nullable) NSString *arkitVersion API_AVAILABLE(ios(13.0));
+
+/**
  Delegate object notified of the changes in replay state.
  */
 @property (nonatomic, weak) id<ARReplaySensorDelegate> replaySensorDelegate API_AVAILABLE(ios(11.0));
